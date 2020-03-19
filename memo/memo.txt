@@ -1,0 +1,13 @@
+<リリース時の注意>
+
+・constantファイルのチェック
+　・cc-log-docker/app/src/config/constants.ts
+
+・docker-composeファイルのチェック
+　・cc-log-docker/docker-compose.yml
+    # command: yarn run docker:build:prod
+    command: yarn run docker:dev
+
+<個別リソース＞
+
+cc-log-docker $ tar zcvf cc-log-docker-secret.tar.gz --exclude ".DS_Store" ./app/src/config/
