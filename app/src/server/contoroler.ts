@@ -22,6 +22,8 @@ export const showCCLogs = async (req: Request, res: Response) => {
     switch (logId) {
       case 'showCstmDetail':
         return { sort: { created: -1 }, limit: 30 }
+      case 'editCstmHistory':
+        return { sort: { created: -1 }, limit: 30 }
       default:
         return {};
     }
@@ -100,6 +102,8 @@ export const deleteCCLogs = async (req: Request, res: Response) => {
     switch (logId) {
       case 'showCstmDetail':
         return { sort: { created: -1 }, skip: 300, limit: 1 }
+      case 'editCstmHistory':
+        return { sort: { created: -1 }, limit: 30 }
       default:
         return {};
     }

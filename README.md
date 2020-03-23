@@ -13,7 +13,7 @@ $ cd cc-log-docker
 $ tar zxvf cc-log-docker-secret.tar.gz
 ```
 
-- cc-log/src/config/
+- ./app/src/config/
 
 ### Docker Build
 
@@ -22,4 +22,29 @@ $ tar zxvf cc-log-docker-secret.tar.gz
 ```
 $ cd cc-log-docker
 $ docker-compose up -d --build
+```
+
+### MongoDB User
+
+```
+mongo admin -u root
+```
+
+```
+> use cclog
+> db.createUser( {
+    user: "******",
+    pwd: "******",
+      roles: [
+        {
+          role: "dbOwner",
+          db: "cclog"
+        }
+      ]
+    }
+  )
+```
+
+```
+db.system.users.find()
 ```

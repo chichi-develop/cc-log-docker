@@ -2,7 +2,6 @@ import mongoose, { Schema, Document } from "mongoose";
 import { CCLog } from "../types/api";
 
 // TODO: 他に使うキー項目はあるか？（入金No、など）
-// TODO: 変更前後のログをどう記録するか（detailesに、a => b、という風にするか）
 
 interface CCLogInterface extends Document, CCLog { }
 
