@@ -20,9 +20,9 @@ export const showCCLogs = async (req: Request, res: Response) => {
 
   const operationObject = (logId: string) => {
     switch (logId) {
-      case 'showCstmDetail':
+      case 'showCstmDetailLog':
         return { sort: { created: -1 }, limit: 30 }
-      case 'editCstmHistory':
+      case 'editCstmDetailLog':
         return { sort: { created: -1 }, limit: 30 }
       default:
         return {};
@@ -100,10 +100,8 @@ export const deleteCCLogs = async (req: Request, res: Response) => {
 
   const operationObject = (logId: string) => {
     switch (logId) {
-      case 'showCstmDetail':
-        return { sort: { created: -1 }, skip: 300, limit: 1 }
-      case 'editCstmHistory':
-        return { sort: { created: -1 }, limit: 30 }
+      case 'showCstmDetailLog':
+        return { sort: { created: -1 }, skip: 20, limit: 1 }
       default:
         return {};
     }
@@ -113,7 +111,7 @@ export const deleteCCLogs = async (req: Request, res: Response) => {
   try {
     const cclogs = await CCLogModel.find(queryObject, null, operationObject(req.query.logId))
     await CCLogModel.deleteMany(Object.assign(queryObject, { _id: { $lte: cclogs[0]._id } }))
-    res.send(cclogs);
+    res.send({});
   } catch (err) {
     res.status(500).send(err);
   }
