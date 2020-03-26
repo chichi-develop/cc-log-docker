@@ -82,6 +82,7 @@ export const deleteCCLog = async (req: Request, res: Response) => {
   }
 };
 
+// TODO: deleteが使われていない
 export const deleteCCLogs = async (req: Request, res: Response) => {
   const queryObject = Object.assign(
     {},
