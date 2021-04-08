@@ -1,6 +1,10 @@
-import { Request, Response, NextFunction } from "express"
-import { CCLogModel } from "../models/ccLog";
-import moment from "moment";
+import { Request, Response } from 'express'
+import { CCLogModel } from '../models/ccLog'
+import moment from 'moment'
+
+function isString(str: any): str is String {
+  return !!str.length
+}
 
 export const showCCLogs = async (req: Request, res: Response) => {
   const queryObject = Object.assign(
@@ -14,7 +18,7 @@ export const showCCLogs = async (req: Request, res: Response) => {
     req.query.nosqsy && { nosqsy: req.query.nosqsy },
     req.query.cdcstm && { cdcstm: req.query.cdcstm },
     req.query.created && { created: req.query.created },
-    req.query.updated && { updated: req.query.updated },
+    req.query.updated && { updated: req.query.updated }
   )
   console.log(queryObject)
 
@@ -25,64 +29,70 @@ export const showCCLogs = async (req: Request, res: Response) => {
       case 'editCstmDetailLog':
         return { sort: { created: -1 }, limit: 30 }
       default:
-        return {};
+        return {}
     }
-  };
-  console.log(operationObject(req.query.logId))
+  }
 
   try {
-    const cclogs = await CCLogModel.find(queryObject, null, operationObject(req.query.logId))
-    res.send(cclogs);
+    if (isString(req.query.logId)) {
+      const cclogs = await CCLogModel.find(
+        queryObject,
+        null,
+        operationObject(req.query.logId)
+      )
+      res.send(cclogs)
+    }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(err)
   }
-};
+}
 
 export const showCCLog = async (req: Request, res: Response) => {
   try {
     const cclog = await CCLogModel.findById(req.params.id)
-    res.send(cclog);
+    res.send(cclog)
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(err)
   }
-};
+}
 
 export const addCCLog = async (req: Request, res: Response) => {
   try {
-    const cclog = await new CCLogModel(Object.assign({}, req.body, { created: moment(), updated: moment() }));
+    const cclog = await new CCLogModel(
+      Object.assign({}, req.body, { created: moment(), updated: moment() })
+    )
     await cclog.save()
-    res.send(cclog);
+    res.send(cclog)
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(err)
   }
-};
+}
 
 export const updateCCLog = async (req: Request, res: Response) => {
   try {
     let obj = Object.assign({}, req.body, { updated: moment() })
-    delete obj.created;
-    const cclog = await CCLogModel.findByIdAndUpdate(
-      req.params.id,
-      obj
-    )
-    res.send(cclog);
+    delete obj.created
+    const cclog = await CCLogModel.findByIdAndUpdate(req.params.id, obj)
+    res.send(cclog)
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(err)
   }
-};
+}
 
 export const deleteCCLog = async (req: Request, res: Response) => {
   try {
     const cclog = await CCLogModel.deleteOne({ _id: req.params.id })
-    if (!cclog) { res.status(404).send("No item found") } else {
-      res.status(200).send("CCLog deleted from database");
+    if (!cclog) {
+      res.status(404).send('No item found')
+    } else {
+      res.status(200).send('CCLog deleted from database')
     }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(err)
   }
-};
+}
 
-// TODO: deleteが使われていない
+// TODO: deleteは使われていない
 export const deleteCCLogs = async (req: Request, res: Response) => {
   const queryObject = Object.assign(
     {},
@@ -95,7 +105,7 @@ export const deleteCCLogs = async (req: Request, res: Response) => {
     req.query.nosqsy && { nosqsy: req.query.nosqsy },
     req.query.cdcstm && { cdcstm: req.query.cdcstm },
     req.query.created && { created: req.query.created },
-    req.query.updated && { updated: req.query.updated },
+    req.query.updated && { updated: req.query.updated }
   )
   console.log(queryObject)
 
@@ -104,16 +114,27 @@ export const deleteCCLogs = async (req: Request, res: Response) => {
       case 'showCstmDetailLog':
         return { sort: { created: -1 }, skip: 20, limit: 1 }
       default:
-        return {};
+        return {}
     }
-  };
-  console.log(operationObject(req.query.logId))
+  }
+
+  if (isString(req.query.logId)) {
+    console.log(operationObject(req.query.logId))
+  }
 
   try {
-    const cclogs = await CCLogModel.find(queryObject, null, operationObject(req.query.logId))
-    await CCLogModel.deleteMany(Object.assign(queryObject, { _id: { $lte: cclogs[0]._id } }))
-    res.send({});
+    if (isString(req.query.logId)) {
+      const cclogs = await CCLogModel.find(
+        queryObject,
+        null,
+        operationObject(req.query.logId)
+      )
+      await CCLogModel.deleteMany(
+        Object.assign(queryObject, { _id: { $lte: cclogs[0]._id } })
+      )
+      res.send({})
+    }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(err)
   }
-};
+}
